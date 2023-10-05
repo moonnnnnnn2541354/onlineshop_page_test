@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>온라인 쇼핑몰</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Noto+Serif+KR:wght@500&family=Sunflower:wght@500&display=swap');
+
+        * {
+            font-family: 'Nanum Pen Script', cursive;
+            font-family: 'Noto Serif KR', serif;
+            font-family: 'Sunflower', sans-serif;
+        }
+
+        h1 {
+            margin: 0px;
+        }
+
+        .TopButton {
+            height: auto;
+
+            display: flex;
+            justify-content: end;
+        }
+
+        .TopButton>button {
+            width: 150px;
+            background-color: transparent;
+            border: 1px solid transparent;
+
+            margin: auto 0px auto 20px;
+        }
+
+        .home {
+            height: auto;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            padding: 50px 0px 50px 0px;
+        }
+
+        .mainButton {
+            height: auto;
+
+            border-top: 1px solid gray;
+            border-bottom: 1px solid gray;
+            box-sizing: border-box;
+
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mainButton>button {
+            width: 150px;
+            height: 40px;
+            background-color: transparent;
+            border: 1px solid transparent;
+
+            margin: 10px 10px 10px 0px;
+        }
+
+        .signUp {
+            width: 500px;
+
+            margin: 50px auto 0px auto;
+            padding: 20px;
+            box-shadow: 0px 0px 3px 0px gray;
+            border-radius: 8px;
+
+        }
+
+        .signUpButton {
+            height: auto;
+
+            display: flex;
+            justify-content: end;
+        }
+
+        .signUpButton>button {
+            margin-right: 5px;
+        }
+
+        .items {
+            width: 1300px;
+
+            margin: 50px auto 0px auto;
+
+        }
+
+        footer {
+            margin-top: 100px;
+            padding-left: 300px;
+
+        }
+
+        footer>p {
+            font-size: 10px;
+        }
+    </style>
+    </style>
+
+    <script type="module">
+        //< type="module">
+
+        // Firebase SDK 라이브러리 가져오기
+        import {
+            initializeApp
+        } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import {
+            getFirestore
+        } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import {
+            collection,
+            addDoc
+        } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import {
+            getDocs
+        } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyD_kIjZeEMgwlGAwxaxtcfBXdK8be_1ZO8",
+            authDomain: "sparta-78444.firebaseapp.com",
+            projectId: "sparta-78444",
+            storageBucket: "sparta-78444.appspot.com",
+            messagingSenderId: "235080934867",
+            appId: "1:235080934867:web:4cd292c2bea672911cbb26",
+            measurementId: "G-E8QRFCV76B"
+        };
+
+
+        // Firebase 인스턴스 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        $("#loginTopBtn").click(async function () {
+            alert('로그인 해주세요.');
+        })
+
+        $("#registrationBtn").click(async function () {
+            $('#registrationBox').toggle();
+        })
+
+        $("#cancelBtn").click(async function () {
+            alert('상품등록을 취소합니다.');
+            $('#registrationBox').toggle();
+        })
+
+        $("#postingBtn").click(async function () {
+            let item = $('#item').val();
+            let itemImage = $('#itemImage').val();
+            let itemNomber = $('#itemNomber').val();
+            let itemName = $('#itemName').val();
+            let itemPrice = $('#itemPrice').val();
+
+            let doc = {
+                'item': item,
+                'itemImage': itemImage,
+                'itemNomber': itemNomber,
+                'itemName': itemName,
+                'itemPrice': itemPrice
+            };
+
+            await addDoc(collection(db, "online_shop"), doc);
+            window.location.reload();
+            alert('상품을 등록합니다.');
+        })
+
+        let docs = await getDocs(collection(db, "online_shop"));
+        docs.forEach((doc) => {
+            let row = doc.data();
+
+            let item = row['item'];
+            let itemImage = row['itemImage'];
+            let itemNomber = row['itemNomber'];
+            let itemName = row['itemName'];
+            let itemPrice = row['itemPrice'];
+
+            let temp_html = `
+            <div class="col">
+                <div class="card">
+                    <img src="${itemImage}" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h6 class="card-title">NO.${itemNomber}</h6>
+                        <h5 class="card-title">${itemName}</h5>
+                        <h5 class="card-text">${itemPrice}원</h5>
+                    </div>
+                </div>
+            </div>`;
+            $('#itemCards').append(temp_html);
+        });
+    </script>
+</head>
+
+<body>
+
+    <header class="py-3 mb-4 border-bottom">
+        <div class="container d-flex flex-wrap justify-content-end">
+            <form class="col-12 col-lg-auto mb-3 mb-lg-0">
+                <div class="TopButton">
+                    <input type="search" class="form-control" placeholder="🔍︎" aria-label="Search">
+                    <button id="loginTopBtn" type="button" class="btn btn-light">로그인</button>
+                    <button id="registrationBtn" type="button" class="btn btn-light">상품등록</button>
+                </div>
+            </form>
+        </div>
+    </header>
+
+
+    <div class="home">
+        <h1 id="title">온라인쇼핑몰</h1>
+    </div>
+    <div class="mainButton">
+        <button type="button" class="btn btn-light">TOP</button>
+        <button type="button" class="btn btn-light">BOTTOM</button>
+        <button type="button" class="btn btn-light">OUTER</button>
+        <button type="button" class="btn btn-light">ACCESSORY</button>
+    </div>
+
+    <div id="registrationBox" class="signUp">
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="inputGroupSelect01">구분</label>
+            <select class="form-select" id="inputGroupSelect01">
+                <option selected></option>
+                <option value="TOP">TOP</option>
+                <option value="BOTTOM">BOTTOM</option>
+                <option value="OUTER">OUTER</option>
+                <option value="ACCESSORY">ACCESSORY</option>
+            </select>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="itemImage" placeholder="사진 첨부">
+            <label for="floatingInput">사진 첨부</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="itemNomber" placeholder="품번">
+            <label for="floatingInput">품번</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="itemName" placeholder="상품명">
+            <label for="floatingInput">상품명</label>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="email" class="form-control" id="itemPrice" placeholder="가격">
+            <label for="floatingInput">가격</label>
+        </div>
+        <div class="signUpButton">
+            <button id="postingBtn" type="button" class="btn btn-dark">등록</button>
+            <button id="cancelBtn" type="button" class="btn btn-light">취소</button>
+        </div>
+    </div>
+
+    <div class="items">
+        <div id="itemCards" class="row row-cols-1 row-cols-md-4 g-4">
+
+
+
+
+        </div>
+    </div>
+    <footer class="info">
+        <p>온라인 쇼핑몰 대표이사 : 〇〇〇 사업자등록번호 : 〇〇〇〇〇〇〇 통신판매업신고 : 제 〇〇〇〇-〇〇〇호</p>
+        <p>주소: 서울특별시 〇〇〇 〇〇〇 전화 : 〇〇-〇〇〇〇-〇〇〇〇 팩스 : 〇〇-〇〇〇〇-〇〇〇〇</p>
+        <p>개인정보책임자 : 〇〇〇 E-mail : 〇〇〇@〇〇〇〇.com </p>
+    </footer>
+
+
+</body>
+
+</html>
